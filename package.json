@@ -1,5 +1,5 @@
 {
-  "name": "oidc2",
+  "name": "oauth2_app",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",

@@ -1,0 +1,9 @@
+# oidc-client
+
+## env
+
+```
+PUBLIC_CLIENT_ID=
+PRIVATE_CLIENT_ID=
+PRIVATE_CLIENT_API=
+```
