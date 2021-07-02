@@ -1,42 +1,36 @@
 import { CryptoJS } from "jsrsasign";
 
-const loginUrl = process.env.LOGIN_URL;
-const clientId = process.env.PUBLIC_CLIENT_ID;
-const baseUrl = process.env.BASE_URL;
+export const getEnvVariables = function () {
+  const elm = document.getElementById("env");
+  return {
+    loginUrl: elm.dataset.loginUrl,
+    clientId: elm.dataset.clientId,
+    baseUrl: elm.dataset.baseUrl,
+  };
+};
 
-export const oauth2AuthURL = function (state, challenge) {
-  const base = loginUrl + "/oauth2/auth?";
-  const queriesObj = {
-    scope: "openid",
-    response_type: "code",
-    client_id: clientId,
-    redirect_uri: baseUrl,
-    code_challenge: challenge,
-    code_challenge_method: "S256",
-    state,
-  };
-  const queries = Object.entries(queriesObj)
-    .map(([prop, value]) => prop + "=" + value)
-    .join("&");
-  return base + queries;
-  //query serialization does not work
-  /*
-  const baseUrl = new URL(loginUrl + "/oauth2/auth?");
-  const queriesObj = {
-    scope: "openid",
-    response_type: "code",
-    client_id: clientId,
-    redirect_uri: baseUrl,
-    code_challenge: challenge,
-    code_challenge_method: "S256",
-    state,
-  };
-  const url = Object.entries(queriesObj).reduce((acc, [prop, value]) => {
+export const queryBuilder = function (baseUrl, queryObj) {
+  const base = new URL(baseUrl);
+  const url = Object.entries(queryObj).reduce((acc, [prop, value]) => {
     acc.searchParams.append(prop, value);
     return acc;
-  }, baseUrl);
+  }, base);
   return url.toString();
-*/
+};
+
+export const oauth2AuthURL = function (state, challenge) {
+  const { loginUrl, clientId, baseUrl } = getEnvVariables();
+  const base = loginUrl + "/oauth2/auth?";
+  const queryObj = {
+    scope: "openid",
+    response_type: "code",
+    client_id: clientId,
+    redirect_uri: baseUrl,
+    code_challenge: challenge,
+    code_challenge_method: "S256",
+    state,
+  };
+  return queryBuilder(base, queryObj);
 };
 
 export const randomString = function (length) {

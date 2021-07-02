@@ -5,7 +5,13 @@ import {
   oauth2AuthURL,
   randomString,
 } from "./utils";
-import { setStateCode, getStateCode } from "./storage";
+import {
+  setStateCode,
+  getStateCode,
+  setVerifier,
+  getVerifier,
+} from "./storage";
+import { requestToken } from "./services";
 
 const mainElement = document.querySelector(".main");
 const {
@@ -20,12 +26,13 @@ const handleLogin = () => {
   const challenge = hashB64(verifier);
   const state = randomString(16);
   const url = oauth2AuthURL(state, challenge);
+  setVerifier(verifier);
   setStateCode(state);
   window.location.replace(url);
 };
 
+const group = createElement("div", {}, ["group"]);
 if (error) {
-  const group = createElement("div", {}, ["group"]);
   const message = createElement("p", { textContent: "Error: " + error });
   const description = createElement("p", {
     textContent: "Description: " + errorDescription,
@@ -38,7 +45,6 @@ if (error) {
   button.addEventListener("click", handleLogin);
   mainElement.appendChild(group);
 } else if (!code) {
-  const group = createElement("div", {}, ["group"]);
   const message = createElement("p", { textContent: "You are not logged in." });
   const button = createElement("button", { textContent: "Login" });
 
@@ -50,5 +56,14 @@ if (error) {
 } else if (code && state) {
   const sessionState = getStateCode();
   if (!state === sessionState) throw new Error("State is not the same");
-  ("");
+
+  const button = createElement("Make a public request");
+  group.appendChild(button);
+
+  button.addEventListener("click", async () => {
+    const verifier = getVerifier();
+    const res = await requestToken(code, verifier);
+    const data = await res.json();
+    alert(data);
+  });
 }

@@ -2,5 +2,6 @@ extends template.pug
 
 block content
 	main.main
+		div#env(data-client-id=env.PUBLIC_CLIENT_ID data-login-url=env.LOGIN_URL data-base-url=env.BASE_URL)
 		h1.title OAUTH2 + PKCE
 	script(src="/js/public.js")

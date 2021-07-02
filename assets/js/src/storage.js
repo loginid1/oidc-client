@@ -1,9 +1,15 @@
 const STATE_KEY = "OAUTH2_STATE";
+const VERIFIER_KEY = "OAUTH2_VERIFIER";
 
-export const setStateCode = (state) => {
-  sessionStorage.setItem(STATE_KEY, state);
+const setItem = (key) => (value) => {
+  sessionStorage.setItem(key, value);
 };
 
-export const getStateCode = () => {
-  return sessionStorage.getItem(STATE_KEY);
+const getIem = (key) => () => {
+  return sessionStorage.getItem(key);
 };
+
+export const setStateCode = setItem(STATE_KEY);
+export const getStateCode = getIem(STATE_KEY);
+export const setVerifier = setItem(VERIFIER_KEY);
+export const getVerifier = getIem(VERIFIER_KEY);
