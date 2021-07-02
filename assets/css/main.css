@@ -1,0 +1,36 @@
+html {
+  box-sizing: border-box;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+}
+
+.buttons button:last-child {
+  margin-left: 1em;
+}
+
+.title {
+  position: fixed;
+  text-align: center;
+  top: 0;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+}
+
+.group button {
+  display: block;
+  margin: 0 auto;
+}
