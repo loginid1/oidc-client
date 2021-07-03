@@ -1,0 +1,30 @@
+extends template.pug
+
+block content
+    main.main
+        h1.title OAuth2 + Private JWT
+        div
+            form(action=authUrl, method="get")
+                p
+                    label(for="redirect_uri") Redirect URI
+                    br
+                    input(type="text", name="redirect_uri" value=baseUrl)
+                p
+                    label(for="client_id") Client ID
+                    br
+                    input(type="text", name="client_id" value=clientId)
+                p
+                    label(for="state") State
+                    br
+                    input(type="text", name="state", value=state)
+                p
+                    label(for="nonce") Nonce
+                    br
+                    input(type="text", name="nonce", value=nonce)
+                p
+                    label(for="scope") Scope
+                    br
+                    input(type="text", name="scope", value=scope)
+                input(type="hidden", name="response_type", value="code")
+                .center
+                    input(type="submit", value="Make request")
