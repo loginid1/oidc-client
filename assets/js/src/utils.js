@@ -18,21 +18,6 @@ export const queryBuilder = function (baseUrl, queryObj) {
   return url.toString();
 };
 
-export const oauth2AuthURL = function (state, challenge) {
-  const { loginUrl, clientId, baseUrl } = getEnvVariables();
-  const base = loginUrl + "/oauth2/auth?";
-  const queryObj = {
-    scope: "openid",
-    response_type: "code",
-    client_id: clientId,
-    redirect_uri: baseUrl,
-    code_challenge: challenge,
-    code_challenge_method: "S256",
-    state,
-  };
-  return queryBuilder(base, queryObj);
-};
-
 export const randomString = function (length) {
   let text = "";
   const possible =

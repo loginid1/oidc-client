@@ -1,17 +1,11 @@
-import {
-  createElement,
-  getQueries,
-  hashB64,
-  oauth2AuthURL,
-  randomString,
-} from "./utils";
+import { createElement, getQueries, hashB64, randomString } from "./utils";
 import {
   setStateCode,
   getStateCode,
   setVerifier,
   getVerifier,
 } from "./storage";
-import { requestToken } from "./services";
+import { authUrl, requestToken } from "./services";
 
 const mainElement = document.querySelector(".main");
 const {
@@ -25,7 +19,7 @@ const handleLogin = () => {
   const verifier = randomString(16);
   const challenge = hashB64(verifier);
   const state = randomString(16);
-  const url = oauth2AuthURL(state, challenge);
+  const url = authUrl(state, challenge);
   setVerifier(verifier);
   setStateCode(state);
   window.location.replace(url);
@@ -57,13 +51,19 @@ if (error) {
   const sessionState = getStateCode();
   if (!state === sessionState) throw new Error("State is not the same");
 
-  const button = createElement("Make a public request");
+  const button = createElement("button", { textContent: "Obtain Token" });
   group.appendChild(button);
 
   button.addEventListener("click", async () => {
     const verifier = getVerifier();
     const res = await requestToken(code, verifier);
     const data = await res.json();
-    alert(data);
+    const display = `
+	${res.status}
+	${JSON.stringify(data, null, 2)}
+	`;
+    const pre = createElement("pre", { textContent: display });
+    group.appendChild(pre);
+    button.remove();
   });
 }
