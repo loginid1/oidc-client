@@ -1,0 +1,12 @@
+extends template.pug
+
+block content
+    main.main
+        h1.title #{title}
+        div
+            p Error code: #{error}
+
+            p Error description: #{error_description}
+
+            p
+                a(href="/private") Try again
