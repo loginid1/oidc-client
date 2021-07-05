@@ -4,7 +4,18 @@ block content
     main.main
         h1.title Authorization complete
         div
-            p Authorization code: #{code}
+            p
+                | Authorization code:
+                br
+                code #{code}
+
+            p
+                | ID token (raw):
+                pre #{idToken}
+            
+            if payloadStr
+                | ID claims:
+                pre !{payloadStr}
 
             p
                 a(href="/private") Try again

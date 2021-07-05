@@ -40,5 +40,15 @@ html {
 }
 
 .main form input[type=text] {
-  width: 25vw;
+  width: 360px;
+}
+
+.main code {
+  width: 360px;
+}
+
+.main pre {
+  word-break: break-all;
+  white-space: pre-wrap;
+  max-width: 360px;
 }
