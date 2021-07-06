@@ -23,7 +23,7 @@ PORT=                    # OPTIONAL: The port number to run the server on. Defau
 
 To run this application fully, 2 OIDC clients are needed. A public and a private OIDC client. The private key associated with the private client is also needed. Make sure to add the client IDs and private key to the .env file.
 
-When creating the clients make sure the callback URLs for the public client is **<BASE_URL>/pubic** and the private client with **<BASE_URL>/private** respectively. The app will not run properly if callback URL is incorrect.
+When creating the clients make sure the callback URLs for the public client is **<BASE_URL>/public** and the private client with **<BASE_URL>/private** respectively. The app will not run properly if callback URL is incorrect.
 
 Here are some examples:
 
