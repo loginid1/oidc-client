@@ -5,9 +5,8 @@ import {
   setVerifier,
   getVerifier,
 } from "./storage";
-import { authUrl, requestToken } from "./services";
+import { authUrl, requestToken, createParams } from "./services";
 
-const mainElement = document.querySelector(".main");
 const {
   code,
   error,
@@ -15,55 +14,87 @@ const {
   error_description: errorDescription,
 } = getQueries();
 
-const handleLogin = () => {
-  const verifier = randomString(16);
-  const challenge = hashB64(verifier);
-  const state = randomString(16);
-  const url = authUrl(state, challenge);
-  setVerifier(verifier);
-  setStateCode(state);
-  window.location.replace(url);
+const mainElement = document.querySelector(".main");
+const group = createElement("div", {}, ["group"]);
+const createInput = (value, textContent) => {
+  const name = textContent.trim().split(" ").join("_").toLowerCase();
+  const label = createElement("label", { textContent });
+  const input = createElement("input", { value, name });
+  const br = createElement("br");
+  group.appendChild(label);
+  group.appendChild(input);
+  group.appendChild(br);
+  mainElement.appendChild(group);
 };
 
-const group = createElement("div", {}, ["group"]);
-if (error) {
-  const message = createElement("p", { textContent: "Error: " + error });
-  const description = createElement("p", {
-    textContent: "Description: " + errorDescription,
-  });
-  const button = createElement("button", { textContent: "Login" });
+(async function () {
+  if (error) {
+    const { redirect_uri } = createParams();
+    const message = createElement("p", { textContent: "Error: " + error });
+    const description = createElement("p", {
+      textContent: "Description: " + errorDescription,
+    });
+    const button = createElement("button", { textContent: "Try Again" });
 
-  group.appendChild(message);
-  group.appendChild(description);
-  group.appendChild(button);
-  button.addEventListener("click", handleLogin);
-  mainElement.appendChild(group);
-} else if (!code) {
-  const message = createElement("p", { textContent: "You are not logged in." });
-  const button = createElement("button", { textContent: "Login" });
+    group.appendChild(message);
+    group.appendChild(description);
+    group.appendChild(button);
+    button.addEventListener("click", () => {
+      window.location.replace(redirect_uri);
+    });
+    mainElement.appendChild(group);
+  } else if (!code) {
+    const params = createParams();
+    const button = createElement("button", { textContent: "Make Request" });
 
-  group.appendChild(message);
-  group.appendChild(button);
-  mainElement.appendChild(group);
+    const verifier = randomString(16);
+    const challenge = hashB64(verifier);
+    const state = randomString(16);
+    const nonce = randomString(16);
+    setVerifier(verifier);
+    setStateCode(state);
 
-  button.addEventListener("click", handleLogin);
-} else if (code && state) {
-  const sessionState = getStateCode();
-  if (!state === sessionState) throw new Error("State is not the same");
+    const p = createElement("p", {
+      textContent: `Your current verifier code is ${verifier}`,
+    });
+    const form = createElement("form", {
+      method: "GET",
+      action: params.authUrl,
+    });
 
-  const button = createElement("button", { textContent: "Obtain Token" });
-  group.appendChild(button);
+    group.appendChild(p);
+    createInput(params.redirect_uri, "Redirect URI");
+    createInput(params.client_id, "Client ID");
+    createInput(params.scope, "Scope");
+    createInput(params.response_type, "Response Type");
+    createInput(state, "State");
+    createInput(nonce, "Nonce");
+    createInput(challenge, "Code Challenge");
+    createInput(params.code_challenge_method, "Code Challenge Method");
+    group.appendChild(button);
+    form.appendChild(group);
 
-  button.addEventListener("click", async () => {
+    mainElement.appendChild(form);
+
+    button.addEventListener("click", () => {
+      const url = authUrl(state, challenge, nonce);
+      window.location.replace(url);
+    });
+  } else if (code && state) {
+    const { redirect_uri } = createParams();
+    const sessionState = getStateCode();
     const verifier = getVerifier();
+    if (state !== sessionState) {
+      window.location.replace(
+        redirect_uri +
+          "?error=State+is+not+the+same&error_description=state_error"
+      );
+    }
+
     const res = await requestToken(code, verifier);
     const data = await res.json();
-    const display = `
-	${res.status}
-	${JSON.stringify(data, null, 2)}
-	`;
-    const pre = createElement("pre", { textContent: display });
-    group.appendChild(pre);
-    button.remove();
-  });
-}
+
+    if (res.ok) {
+    }
+  }
+})();
