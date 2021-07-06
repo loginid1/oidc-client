@@ -39,14 +39,15 @@ export const authUrl = function (state, challenge, nonce) {
 export const requestToken = async (code, verifier) => {
   const { loginUrl, baseUrl, clientId } = getEnvVariables();
   const url = loginUrl + "/oauth2/token";
+  const params = new URLSearchParams([
+    ["grant_type", "authorization_code"],
+    ["redirect_uri", baseUrl + "/public"],
+    ["client_id", clientId],
+    ["code", code],
+    ["code_verifier", verifier],
+  ]);
   return await fetch(url, {
     method: "POST",
-    body: JSON.parse({
-      client_id: clientId,
-      grant_type: "authorization_code",
-      code,
-      redirect_uri: baseUrl + "/public",
-      code_verifier: verifier,
-    }),
+    body: params,
   });
 };
