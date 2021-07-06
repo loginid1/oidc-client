@@ -15,6 +15,11 @@ export const createParams = (state, challenge) => {
   return obj;
 };
 
+export const errorUrl = (message, code) => {
+  const { response_type } = createParams();
+  return `${response_type}?error=${message}&error_description=${code}`;
+};
+
 export const authUrl = function (state, challenge, nonce) {
   const { loginUrl, clientId, baseUrl } = getEnvVariables();
   const base = loginUrl + "/oauth2/auth?";

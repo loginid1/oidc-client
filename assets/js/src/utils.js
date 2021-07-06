@@ -1,4 +1,4 @@
-import { CryptoJS } from "jsrsasign";
+import { CryptoJS, KJUR } from "jsrsasign";
 
 export const getEnvVariables = function () {
   const elm = document.getElementById("env");
@@ -51,4 +51,12 @@ export const createElement = function (name, props = {}, classes = []) {
     elm[key] = value;
   });
   return elm;
+};
+
+export const parseJWT = function (jwt) {
+  const parsed = KJUR.jws.JWS.parse(jwt);
+  return {
+    header: parsed.headerObj,
+    payload: parsed.payloadObj || {},
+  };
 };

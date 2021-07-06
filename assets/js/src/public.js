@@ -1,11 +1,19 @@
-import { createElement, getQueries, hashB64, randomString } from "./utils";
+import {
+  createElement,
+  getQueries,
+  hashB64,
+  randomString,
+  parseJWT,
+} from "./utils";
 import {
   setStateCode,
   getStateCode,
   setVerifier,
   getVerifier,
+  setNonce,
+  getNonce,
 } from "./storage";
-import { authUrl, requestToken, createParams } from "./services";
+import { authUrl, errorUrl, requestToken, createParams } from "./services";
 
 const {
   code,
@@ -53,6 +61,7 @@ const createInput = (value, textContent) => {
     const nonce = randomString(16);
     setVerifier(verifier);
     setStateCode(state);
+    setNonce(nonce);
 
     const p = createElement("p", {
       textContent: `Your current verifier code is ${verifier}`,
@@ -73,7 +82,6 @@ const createInput = (value, textContent) => {
     createInput(params.code_challenge_method, "Code Challenge Method");
     group.appendChild(button);
     form.appendChild(group);
-
     mainElement.appendChild(form);
 
     button.addEventListener("click", () => {
@@ -84,17 +92,38 @@ const createInput = (value, textContent) => {
     const { redirect_uri } = createParams();
     const sessionState = getStateCode();
     const verifier = getVerifier();
+
     if (state !== sessionState) {
-      window.location.replace(
-        redirect_uri +
-          "?error=State+is+not+the+same&error_description=state_error"
-      );
+      window.location.replace(errorUrl("State is not the same", "state_error"));
     }
 
     const res = await requestToken(code, verifier);
     const data = await res.json();
 
     if (res.ok) {
+      const { id_token: idToken } = data;
+      const { payload } = parseJWT(idToken);
+
+      if (payload.nonce && payload.nonce !== getNonce()) {
+        window.location.replace(
+          errorUrl("Nonce is not the same", "nonce_error")
+        );
+      }
+
+      const p = createElement("p", { textContent: "Your ID token: " });
+      const pre = createElement("pre");
+      const button = createElement("button");
+      pre.textContent = JSON.stringify(payload, null, 2);
+      button.addEventListener("click", () => {
+        window.location.replace(redirect_uri);
+      });
+      mainElement.appendChild(p);
+      mainElement.appendChild(pre);
+      mainElement.appendChild(button);
+    } else {
+      window.location.replace(
+        errorUrl(data.message || "id_token request error", data.code || "error")
+      );
     }
   }
 })();
