@@ -115,7 +115,7 @@ const createInput = (value, textContent) => {
         { textContent: "Authorization Code: " },
         ["center"]
       );
-      const authCode = createElement("p", { textContent: idToken }, ["limit"]);
+      const authCode = createElement("p", { textContent: code }, ["limit"]);
 
       const p = createElement("p", { textContent: "ID token: " }, ["center"]);
       const pre = createElement("pre", {}, ["align-self-center"]);

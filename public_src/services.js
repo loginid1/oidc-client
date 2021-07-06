@@ -16,8 +16,8 @@ export const createParams = (state, challenge) => {
 };
 
 export const errorUrl = (message, code) => {
-  const { response_type } = createParams();
-  return `${response_type}?error=${message}&error_description=${code}`;
+  const { redirect_uri } = createParams();
+  return `${redirect_uri}?error=${message}&error_description=${code}`;
 };
 
 export const authUrl = function (state, challenge, nonce) {
