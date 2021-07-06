@@ -110,16 +110,26 @@ const createInput = (value, textContent) => {
         );
       }
 
-      const p = createElement("p", { textContent: "Your ID token: " });
-      const pre = createElement("pre");
-      const button = createElement("button");
+      const authCodePre = createElement(
+        "p",
+        { textContent: "Authorization Code: " },
+        ["center"]
+      );
+      const authCode = createElement("p", { textContent: idToken }, ["limit"]);
+
+      const p = createElement("p", { textContent: "ID token: " }, ["center"]);
+      const pre = createElement("pre", {}, ["align-self-center"]);
+      const button = createElement("button", { textContent: "Try Again" });
       pre.textContent = JSON.stringify(payload, null, 2);
       button.addEventListener("click", () => {
         window.location.replace(redirect_uri);
       });
-      mainElement.appendChild(p);
-      mainElement.appendChild(pre);
-      mainElement.appendChild(button);
+      group.appendChild(authCodePre);
+      group.appendChild(authCode);
+      group.appendChild(p);
+      group.appendChild(pre);
+      group.appendChild(button);
+      mainElement.appendChild(group);
     } else {
       window.location.replace(
         errorUrl(data.message || "id_token request error", data.code || "error")

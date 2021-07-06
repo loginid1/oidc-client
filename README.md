@@ -17,7 +17,7 @@ LOGIN_URL=               # The base URL to request the OAuth2 endpoints from. Eg
 PUBLIC_CLIENT_ID=        # The client ID for the public OIDC client.
 PRIVATE_CLIENT_ID=       # The client ID for the private OIDC client.
 PRIVATE_CLIENT_KEY=      # The private key associated with <PRIVATE_CLIENT_ID>.
-BASE_URL=                # OPTIONAL: The base URL to run the server on. Defaults to http://localhost:
+BASE_URL=                # The base URL to run the server on. Example http://localhost:3000.
 PORT=                    # OPTIONAL: The port number to run the server on. Defaults to 3000.
 ```
 
@@ -39,4 +39,4 @@ Enter:
 $ npm start
 ```
 
-App will be running at <BASE_URL>:<PORT> or defaulted to http://localhost:3000.
+App will be running at <BASE_URL>.
