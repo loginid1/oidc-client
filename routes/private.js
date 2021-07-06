@@ -47,8 +47,8 @@ async function parseJwt (jwt) {
 
 async function privateClientHandler (req, res) {
     const code = req.query.code;
-    const error = req.query.error;
-    const error_description = req.query.error_description;
+    let error = req.query.error;
+    let error_description = req.query.error_description;
 
     if (code) {
         // TODO: check state
