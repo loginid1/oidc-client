@@ -39,7 +39,7 @@ html {
   margin: 0 auto;
 }
 
-.main form input[type=text] {
+.main form input[type="text"] {
   width: 360px;
 }
 
@@ -51,4 +51,18 @@ html {
   word-break: break-all;
   white-space: pre-wrap;
   max-width: 360px;
+}
+
+.limit {
+  word-break: break-all;
+  white-space: pre-wrap;
+  max-width: 360px;
+}
+
+.align-self-center {
+  align-self: center;
+}
+
+.hidden {
+  display: none;
 }

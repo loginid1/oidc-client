@@ -3,5 +3,44 @@ extends template.pug
 block content
 	main.main
 		div#env(data-client-id=env.PUBLIC_CLIENT_ID data-login-url=env.LOGIN_URL data-base-url=env.BASE_URL)
-		h1.title OAUTH2 + PKCE
-	script(src="/js/public.js")
+		h1.title OAuth2 + PKCE
+		form#request-group(class="hidden" method="GET")
+			div(class="group")
+				p Your current verifier code is 
+				form
+				label Redirect URI
+				input(name="redirect_uri")
+				br
+				label Client ID
+				input(name="client_id")
+				br
+				label Scope
+				input(name="scope")
+				br
+				label Response Type
+				input(name="response_type")
+				br
+				label State
+				input(name="state")
+				br
+				label Nonce
+				input(name="nonce")
+				br
+				label Code Challenge
+				input(name="code_challenge")
+				br
+				label Code Challenge Method
+				input(name="code_challenge_method")
+				br
+				button#request Make Request
+		div#error-group(class="group hidden")
+			p.error
+			p.error-description
+			button#again Try Again
+		div#success-group(class="group hidden")
+			p.center Authorization Code:
+			p.code(class="limit")
+			p.center ID Token:
+			pre.id-token(class="align-self-center")
+			button#again Try Again
+		script(src="/js/public.js")

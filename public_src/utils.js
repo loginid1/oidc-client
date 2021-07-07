@@ -1,4 +1,4 @@
-import { CryptoJS } from "jsrsasign";
+import { CryptoJS, KJUR } from "jsrsasign";
 
 export const getEnvVariables = function () {
   const elm = document.getElementById("env");
@@ -16,21 +16,6 @@ export const queryBuilder = function (baseUrl, queryObj) {
     return acc;
   }, base);
   return url.toString();
-};
-
-export const oauth2AuthURL = function (state, challenge) {
-  const { loginUrl, clientId, baseUrl } = getEnvVariables();
-  const base = loginUrl + "/oauth2/auth?";
-  const queryObj = {
-    scope: "openid",
-    response_type: "code",
-    client_id: clientId,
-    redirect_uri: baseUrl,
-    code_challenge: challenge,
-    code_challenge_method: "S256",
-    state,
-  };
-  return queryBuilder(base, queryObj);
 };
 
 export const randomString = function (length) {
@@ -66,4 +51,12 @@ export const createElement = function (name, props = {}, classes = []) {
     elm[key] = value;
   });
   return elm;
+};
+
+export const parseJWT = function (jwt) {
+  const parsed = KJUR.jws.JWS.parse(jwt);
+  return {
+    header: parsed.headerObj,
+    payload: parsed.payloadObj || {},
+  };
 };

@@ -1,10 +1,8 @@
 const path = require("path");
-const Dotenv = require("dotenv-webpack");
 
 module.exports = {
   mode: "development",
-  entry: "./assets/js/src/public.js",
-  plugins: [new Dotenv()],
+  entry: "./public_src/public.js",
   output: {
     path: path.resolve(__dirname, "assets", "js"),
     filename: "public.js",
