@@ -1,5 +1,11 @@
 import { getQueries, hashB64, randomString, parseJWT } from "./utils";
-import { authUrl, errorUrl, requestToken, createParams } from "./services";
+import {
+  authUrl,
+  errorUrl,
+  requestToken,
+  createParams,
+  userInfo,
+} from "./services";
 import {
   setStateCode,
   getStateCode,
@@ -87,7 +93,7 @@ const {
     const data = await res.json();
 
     if (res.ok) {
-      const { id_token: idToken } = data;
+      const { id_token: idToken, access_token: accessToken } = data;
       const { payload } = parseJWT(idToken);
 
       if (payload.nonce && payload.nonce !== getNonce()) {
@@ -109,6 +115,35 @@ const {
       });
 
       group.classList.remove("hidden");
+
+      if (accessToken) {
+        const res = await userInfo(accessToken);
+
+        if (res.ok) {
+          const userInfoBtn = document.getElementById("uinfo");
+          const tokenBtn = document.getElementById("id-token-btn");
+          const userInfoElm = group.querySelector(".user-info");
+          const infoTitle = document.getElementById("info-title");
+          const userData = await res.json();
+
+          userInfoBtn.classList.remove("hidden");
+          tokenBtn.classList.remove("hidden");
+
+          userInfoBtn.addEventListener("click", () => {
+            infoTitle.textContent = "User Info:";
+            idTokenElm.classList.add("hidden");
+            userInfoElm.classList.remove("hidden");
+          });
+
+          tokenBtn.addEventListener("click", () => {
+            infoTitle.textContent = "ID Token:";
+            userInfoElm.classList.add("hidden");
+            idTokenElm.classList.remove("hidden");
+          });
+
+          userInfoElm.textContent = JSON.stringify(userData, null, 2);
+        }
+      }
     } else {
       window.location.replace(
         errorUrl(data.message || "id_token request error", data.code || "error")

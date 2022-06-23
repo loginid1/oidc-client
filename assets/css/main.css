@@ -66,3 +66,7 @@ html {
 .hidden {
   display: none;
 }
+
+.buttons {
+  display: flex;
+}

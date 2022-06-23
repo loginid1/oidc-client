@@ -24,7 +24,7 @@ export const authUrl = function (state, challenge, nonce) {
   const { loginUrl, clientId, baseUrl } = getEnvVariables();
   const base = loginUrl + "/oauth2/auth?";
   const queryObj = {
-    scope: "openid",
+    scope: "openid email",
     response_type: "code",
     client_id: clientId,
     redirect_uri: baseUrl + "/public",
@@ -49,5 +49,15 @@ export const requestToken = async (code, verifier) => {
   return await fetch(url, {
     method: "POST",
     body: params,
+  });
+};
+
+export const userInfo = async (accessToken) => {
+  const { loginUrl } = getEnvVariables();
+  const url = loginUrl + "/oauth2/userinfo";
+  return await fetch(url, {
+    headers: { "Content-Type": "application/json" },
+    method: "POST",
+    body: JSON.stringify({ access_token: accessToken }),
   });
 };

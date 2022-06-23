@@ -40,7 +40,11 @@ block content
 		div#success-group(class="group hidden")
 			p.center Authorization Code:
 			p.code(class="limit")
-			p.center ID Token:
+			p#info-title(class="center") ID Token:
 			pre.id-token(class="align-self-center")
-			button#again Try Again
+			pre.user-info(class="align-self-center hidden")
+			div(class="buttons")
+				button#again Try Again
+				button#id-token-btn(class="hidden") ID Token
+				button#uinfo(class="hidden") User Info
 		script(src="/js/public.js")
